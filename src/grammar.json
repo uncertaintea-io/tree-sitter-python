@@ -3304,23 +3304,15 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "comparison_operator"
+          "name": "given_operator"
         },
         {
           "type": "SYMBOL",
-          "name": "not_operator"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "boolean_operator"
+          "name": "_logical_expression"
         },
         {
           "type": "SYMBOL",
           "name": "lambda"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "primary_expression"
         },
         {
           "type": "SYMBOL",
@@ -3333,6 +3325,27 @@
         {
           "type": "SYMBOL",
           "name": "as_pattern"
+        }
+      ]
+    },
+    "_logical_expression": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "comparison_operator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "not_operator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "boolean_operator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "primary_expression"
         }
       ]
     },
@@ -3450,6 +3463,39 @@
         }
       ]
     },
+    "given_operator": {
+      "type": "PREC",
+      "value": 9,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_logical_expression"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "STRING",
+              "value": "given"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "right",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_logical_expression"
+            }
+          }
+        ]
+      }
+    },
     "not_operator": {
       "type": "PREC",
       "value": 12,
@@ -3465,7 +3511,7 @@
             "name": "argument",
             "content": {
               "type": "SYMBOL",
-              "name": "expression"
+              "name": "_logical_expression"
             }
           }
         ]
@@ -3485,7 +3531,7 @@
                 "name": "left",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "expression"
+                  "name": "_logical_expression"
                 }
               },
               {
@@ -3501,7 +3547,7 @@
                 "name": "right",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "expression"
+                  "name": "_logical_expression"
                 }
               }
             ]
@@ -3518,7 +3564,7 @@
                 "name": "left",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "expression"
+                  "name": "_logical_expression"
                 }
               },
               {
@@ -3534,7 +3580,7 @@
                 "name": "right",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "expression"
+                  "name": "_logical_expression"
                 }
               }
             ]

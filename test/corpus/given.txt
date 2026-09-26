@@ -1,0 +1,255 @@
+================================================================================
+Given arithmetic and logical precedence
+================================================================================
+
+y = 2*x given x >= 5 and not x > 9
+y = x + 1 given x < 0 or x >= 5 and not x > 9
+y = a or b given c
+y = not a given b
+
+--------------------------------------------------------------------------------
+
+(module
+  (assignment
+    (identifier)
+    (given_operator
+      (binary_operator
+        (integer)
+        (identifier))
+      (boolean_operator
+        (comparison_operator
+          (identifier)
+          (integer))
+        (not_operator
+          (comparison_operator
+            (identifier)
+            (integer))))))
+  (assignment
+    (identifier)
+    (given_operator
+      (binary_operator
+        (identifier)
+        (integer))
+      (boolean_operator
+        (comparison_operator
+          (identifier)
+          (integer))
+        (boolean_operator
+          (comparison_operator
+            (identifier)
+            (integer))
+          (not_operator
+            (comparison_operator
+              (identifier)
+              (integer)))))))
+  (assignment
+    (identifier)
+    (given_operator
+      (boolean_operator
+        (identifier)
+        (identifier))
+      (identifier)))
+  (assignment
+    (identifier)
+    (given_operator
+      (not_operator
+        (identifier))
+      (identifier))))
+
+================================================================================
+Given general conditions
+================================================================================
+
+x given predicate(x)
+x given flag
+x given 5
+x given (a or b)
+
+--------------------------------------------------------------------------------
+
+(module
+  (given_operator
+    (identifier)
+    (call
+      (identifier)
+      (argument_list
+        (identifier))))
+  (given_operator
+    (identifier)
+    (identifier))
+  (given_operator
+    (identifier)
+    (integer))
+  (given_operator
+    (identifier)
+    (parenthesized_expression
+      (boolean_operator
+        (identifier)
+        (identifier)))))
+
+================================================================================
+Given conditional and lambda precedence
+================================================================================
+
+x given p if flag else z
+(x if flag else z) given p
+f = lambda x: x given p
+x given (lambda: p)
+
+--------------------------------------------------------------------------------
+
+(module
+  (conditional_expression
+    (given_operator
+      (identifier)
+      (identifier))
+    (identifier)
+    (identifier))
+  (given_operator
+    (parenthesized_expression
+      (conditional_expression
+        (identifier)
+        (identifier)
+        (identifier)))
+    (identifier))
+  (assignment
+    (identifier)
+    (lambda
+      (lambda_parameters
+        (identifier))
+      (given_operator
+        (identifier)
+        (identifier))))
+  (given_operator
+    (identifier)
+    (parenthesized_expression
+      (lambda
+        (identifier)))))
+
+================================================================================
+Given explicit nesting
+================================================================================
+
+(x given p) given q
+x given (p given q)
+
+--------------------------------------------------------------------------------
+
+(module
+  (given_operator
+    (parenthesized_expression
+      (given_operator
+        (identifier)
+        (identifier)))
+    (identifier))
+  (given_operator
+    (identifier)
+    (parenthesized_expression
+      (given_operator
+        (identifier)
+        (identifier)))))
+
+================================================================================
+Given contextual keyword
+================================================================================
+
+given = 5
+given(x)
+obj.given
+f(given=1)
+x given given
+
+--------------------------------------------------------------------------------
+
+(module
+  (assignment
+    (identifier)
+    (integer))
+  (call
+    (identifier)
+    (argument_list
+      (identifier)))
+  (attribute
+    (identifier)
+    (identifier))
+  (call
+    (identifier)
+    (argument_list
+      (keyword_argument
+        (identifier)
+        (integer))))
+  (given_operator
+    (identifier)
+    (identifier)))
+
+================================================================================
+Given expression contexts
+================================================================================
+
+f(x given p)
+[x given p for x in xs if p]
+return x given p
+f"{x given p}"
+
+--------------------------------------------------------------------------------
+
+(module
+  (call
+    (identifier)
+    (argument_list
+      (given_operator
+        (identifier)
+        (identifier))))
+  (list_comprehension
+    (given_operator
+      (identifier)
+      (identifier))
+    (for_in_clause
+      (identifier)
+      (identifier))
+    (if_clause
+      (identifier)))
+  (return_statement
+    (given_operator
+      (identifier)
+      (identifier)))
+  (string
+    (string_start)
+    (interpolation
+      (given_operator
+        (identifier)
+        (identifier)))
+    (string_end)))
+
+================================================================================
+Given rejects implicit chaining
+:error
+================================================================================
+
+x given p given q
+
+--------------------------------------------------------------------------------
+
+(ERROR)
+
+================================================================================
+Given rejects implicit chaining through logic
+:error
+================================================================================
+
+x given p and q given r
+
+--------------------------------------------------------------------------------
+
+(ERROR)
+
+================================================================================
+Given rejects implicit chaining in lambda
+:error
+================================================================================
+
+lambda: x given p given q
+
+--------------------------------------------------------------------------------
+
+(ERROR)
