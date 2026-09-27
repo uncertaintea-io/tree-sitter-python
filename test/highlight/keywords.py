@@ -28,3 +28,9 @@ a and b or c
 # ^ operator
 #     ^ variable
 #       ^ operator
+
+x given p
+# ^ operator
+
+given = 5
+# <- variable

@@ -9,6 +9,29 @@
 
 Python grammar for [tree-sitter][].
 
+This fork adds a contextual `given` operator for conditional probability:
+
+```python
+y = 2*x given x >= 5 and not x > 9
+```
+
+`given` binds less tightly than arithmetic, comparisons, `not`, `and`, and
+`or`, but more tightly than conditional expressions and lambdas. The example
+groups as `(2*x) given ((x >= 5) and (not (x > 9)))`. Conditions accept general
+expressions; validating and evaluating them is the runtime's responsibility.
+The parser produces a `given_operator` node with `left`, `operator`, and `right`
+fields.
+
+Repeated conditioning requires parentheses: `(x given p) given q` or
+`x given (p given q)`. To condition a whole conditional expression, write
+`(x if flag else z) given p`. Existing identifiers named `given` remain valid.
+This syntax extension does not add execution support to standard Python.
+
+To regenerate the parser, install Node.js/npm and run `npm ci` followed by
+`npx tree-sitter generate`. Run `npx tree-sitter test` to compile and test the
+parser; this also requires a C compiler. Generated parser sources are committed
+so binding consumers do not need to regenerate them.
+
 [tree-sitter]: https://github.com/tree-sitter/tree-sitter
 
 ## References

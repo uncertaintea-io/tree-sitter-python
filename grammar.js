@@ -19,6 +19,7 @@ const PREC = {
 
   parenthesized_expression: 1,
   parenthesized_list_splat: 1,
+  given: 9,
   or: 10,
   and: 11,
   not: 12,
@@ -712,14 +713,19 @@ module.exports = grammar({
     ),
 
     expression: $ => choice(
-      $.comparison_operator,
-      $.not_operator,
-      $.boolean_operator,
+      $.given_operator,
+      $._logical_expression,
       $.lambda,
-      $.primary_expression,
       $.conditional_expression,
       $.named_expression,
       $.as_pattern,
+    ),
+
+    _logical_expression: $ => choice(
+      $.comparison_operator,
+      $.not_operator,
+      $.boolean_operator,
+      $.primary_expression,
     ),
 
     primary_expression: $ => choice(
@@ -751,21 +757,28 @@ module.exports = grammar({
       alias($.list_splat_pattern, $.list_splat),
     ),
 
+    // Require parentheses around directly nested conditioning operations.
+    given_operator: $ => prec(PREC.given, seq(
+      field('left', $._logical_expression),
+      field('operator', 'given'),
+      field('right', $._logical_expression),
+    )),
+
     not_operator: $ => prec(PREC.not, seq(
       'not',
-      field('argument', $.expression),
+      field('argument', $._logical_expression),
     )),
 
     boolean_operator: $ => choice(
       prec.left(PREC.and, seq(
-        field('left', $.expression),
+        field('left', $._logical_expression),
         field('operator', 'and'),
-        field('right', $.expression),
+        field('right', $._logical_expression),
       )),
       prec.left(PREC.or, seq(
-        field('left', $.expression),
+        field('left', $._logical_expression),
         field('operator', 'or'),
-        field('right', $.expression),
+        field('right', $._logical_expression),
       )),
     ),
 

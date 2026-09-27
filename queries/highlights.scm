@@ -94,6 +94,7 @@
   "~"
   "@="
   "and"
+  "given"
   "in"
   "is"
   "not"
